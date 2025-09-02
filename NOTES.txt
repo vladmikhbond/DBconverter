@@ -1,0 +1,7 @@
+Комади міграції
+alembic revision --autogenerate -m "add email to users"
+alembic upgrade head
+
+   alembic downgrade -1
+   alembic downgrade <revision_id>
+   alembic downgrade base
