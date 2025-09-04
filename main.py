@@ -42,10 +42,15 @@ def write_problems(rows) -> None:
         session.commit()      
 
 def add_test_users():
+    import bcrypt
+    hp1 = bcrypt.hashpw(b"123456", bcrypt.gensalt())
+    hp2 = bcrypt.hashpw(b"123456", bcrypt.gensalt())
+    hp3 = bcrypt.hashpw(b"123456", bcrypt.gensalt())
+
     users = [ 
-        User(username="1Ivanenko", password="$2b$12$5.UMYfLpwAvH7FSZgCol6ufjSSOgEX0955EzVUZknkjVClSbawDSK", role="student"), 
-        User(username="2Petrenko", password="$2b$12$5.UMYfLpwAvH7FSZgCol6ufjSSOgEX0955EzVUZknkjVClSbawDSK", role="student"), 
-        User(username="py", password="$2b$12$XJJVS0JfMerpvrZiykvNyORfpdCKw8Aa5t9AFjZs1Z0XGp9dn8O62", role="tutor"), 
+        User(username="student", hashed_password=hp1, role="student"), 
+        User(username="tutor", hashed_password=hp2, role="tutor"), 
+        User(username="admin", hashed_password=hp3, role="admin"), 
     ]
     with Session(engine) as session:        
         for user in users:           
@@ -67,10 +72,11 @@ def add_test_problemsets():
 
 
 if __name__ == "__main__":
+    pass
     # rows = read_problems()
     # write_problems(rows)
     # print(f"Конвертовано задач: {len(rows)}")
-    # add_test_users()
-    # print(f"Додано тестових юзерів")
+    add_test_users()
+    print(f"Додано тестових юзерів")
     # add_test_problemsets()
     # print(f"Додано тестових задачників")

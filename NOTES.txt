@@ -1,3 +1,4 @@
+
 Комади міграції
 alembic revision --autogenerate -m "add email to users"
 alembic upgrade head
