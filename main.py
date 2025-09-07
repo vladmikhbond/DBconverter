@@ -72,11 +72,12 @@ def add_test_problemsets():
 
 
 if __name__ == "__main__":
-    pass
+    # pass
     # rows = read_problems()
     # write_problems(rows)
     # print(f"Конвертовано задач: {len(rows)}")
+
     add_test_users()
     print(f"Додано тестових юзерів")
-    # add_test_problemsets()
-    # print(f"Додано тестових задачників")
+    add_test_problemsets()
+    print(f"Додано тестових задачників")

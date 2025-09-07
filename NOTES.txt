@@ -1,6 +1,6 @@
 
 Комади міграції
-alembic revision --autogenerate -m "add email to users"
+alembic revision --autogenerate -m "add tickets table"
 alembic upgrade head
 
    alembic downgrade -1
