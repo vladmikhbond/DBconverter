@@ -85,28 +85,30 @@ def add_test_users():
 
 def add_test_problemsets():
     probsets = [
-        ProblemSet(id="Задачник1", user_id="tutor", open_time=datetime.datetime.now(), open_minutes=0,
-                   problem_ids="326f85e2-7013-4ceb-8b33-e755686b8465 ad70aca4-ab88-499c-9a8f-91b4a448f2e6 9b873d4f-2ee2-487e-910e-a22f4cdee43c"),
-        ProblemSet(id="Задачник2", user_id="tutor", open_time=datetime.datetime.now(), open_minutes=0,
-                   problem_ids="326f85e2-7013-4ceb-8b33-e755686b8465 ad70aca4-ab88-499c-9a8f-91b4a448f2e6 9b873d4f-2ee2-487e-910e-a22f4cdee43c"),
+        ProblemSet(title="Задачник1", username="tutor", open_time=datetime.datetime.now(), open_minutes=0,
+                   problem_ids=""),
+        ProblemSet(title="Задачник2", username="tutor", open_time=datetime.datetime.now(), open_minutes=0,
+                   problem_ids=""),
     ]
-    with Session(engine) as session:        
-        for probset in probsets:           
-            session.add(probset)
-        session.commit()      
+    with Session(engine) as db:        
+        for probset in probsets:
+            ids = map(lambda p: p.id, db.query(Problem).all()[:3]) 
+            probset.problem_ids = ' '.join(ids)                 
+            db.add(probset)
+        db.commit()      
 
 
 if __name__ == "__main__":
-    rows = read_students()
-    write_students(rows)
-    print(f"Конвертовано студентів: {len(rows)}")
+    # rows = read_students()
+    # write_students(rows)
+    # print(f"Конвертовано студентів: {len(rows)}")
 
 
-    rows = read_problems()
-    write_problems(rows)
-    print(f"Конвертовано задач: {len(rows)}")
+    # rows = read_problems()
+    # write_problems(rows)
+    # print(f"Конвертовано задач: {len(rows)}")
 
-    add_test_users()
-    print(f"Додано тестових юзерів")
-    add_test_problemsets()
-    print(f"Додано тестових задачників")
+    # add_test_users()
+    # print(f"Додано тестових юзерів")
+    # add_test_problemsets()
+    # print(f"Додано тестових задачників")
