@@ -73,9 +73,10 @@ def add_test_users():
     
     hp = bcrypt.hashpw(b"123456", bcrypt.gensalt())
     users = [ 
-        User(username="student", hashed_password=hp, role="student"), 
-        User(username="tutor", hashed_password=hp, role="tutor"), 
-        User(username="admin", hashed_password=hp, role="admin"), 
+        # User(username="student", hashed_password=hp, role="student"), 
+        # User(username="tutor", hashed_password=hp, role="tutor"), 
+        # User(username="admin", hashed_password=hp, role="admin"), 
+        User(username="oop", hashed_password=hp, role="tutor"), 
     ]
     with Session(engine) as session:        
         for user in users:           
@@ -99,6 +100,7 @@ def add_test_problemsets():
 
 
 if __name__ == "__main__":
+    pass
     # rows = read_students()
     # write_students(rows)
     # print(f"Конвертовано студентів: {len(rows)}")

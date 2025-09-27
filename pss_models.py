@@ -62,10 +62,15 @@ class Ticket(Base):
 
     username: Mapped[str] = mapped_column(String, ForeignKey("users.username", ondelete="CASCADE"))
     problem_id: Mapped[str] = mapped_column(String, ForeignKey("problems.id", ondelete="CASCADE")) 
-    records: Mapped[str] = mapped_column(Text)
-    comment: Mapped[str] = mapped_column(String)   
+    records: Mapped[str] = mapped_column(Text, default="")
+    comment: Mapped[str] = mapped_column(String)
+    expire_time: Mapped[datetime] = mapped_column(DateTime)
+    state: Mapped[int] = mapped_column(Integer, default=0) # 1 - problem is solved
     #  nav
     user: Mapped["User"] = relationship(back_populates="tickets")
     problem: Mapped["Problem"] = relationship(back_populates="tickets")
-   
 
+    def do_record(self, solving, check_message):  
+        RECORD = "~0~{0}\n~1~{1}\n~2~{2:%Y-%m-%d %H:%M:%S}\n~3~\n"
+        self.records += RECORD.format(solving, check_message, datetime.now())
+        
