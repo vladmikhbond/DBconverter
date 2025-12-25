@@ -1,9 +1,9 @@
 import pyodbc
-from src.pss_models import Base, Problem, ProblemSet, User
 from sqlalchemy import create_engine, String, DateTime
 from sqlalchemy.orm import Session
-import datetime
-import uuid
+import datetime as dt
+
+from tutor_models import Disc, Lecture
 
 conn_str_ask = 'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=HP2\\SQLEXPRESS; DATABASE=Ask; Trusted_Connection=yes'
 path_to_db = "sqlite:///Tutor.db"
@@ -13,53 +13,54 @@ engine = create_engine(path_to_db, echo=False)
 # Base.metadata.create_all(engine)
 
 
-def read_problems():
+def convert_disc(disc_title: str, username: str, lang: str):
+    disc = None
+    with Session(engine) as db:
+        same_titlt_discs = db.query(Disc).filter(Disc.title == disc_title).all()
+        if len(same_titlt_discs) > 0:
+            print ("same_titlt_discs")
+            return
+        disc = Disc(username=username,
+                    title=disc_title,
+                    lang=lang,
+                    theme="black")
+        db.add(disc)
+        db.commit()
+        db.refresh(disc)
+
+    # rows = read_lectures(disc)
+    # write_lectures(disc, rows)
+
+def read_lectures(disc: Disc):
     with pyodbc.connect(conn_str_ask) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT Id, Title, Attr, Lang, Cond, [View], Hint, Code, Author FROM Tasks")
+        cursor.execute(
+            f"SELECT Title, Content FROM Lecture WHERE TutorName='{disc.title}'")
         rows = cursor.fetchall()
     return rows
 
-
-def write_problems(rows) -> None:
+def write_lectures(disc: Disc, rows) -> None:
     with Session(engine) as db:
-        db.query(Problem).delete()  # Видалити всі рядки з таблиці Problems
         for r in rows:
-            prob = Problem(
-                id = str(uuid.uuid4()),  # '550e8400-e29b-41d4-a716-446655440000'
-                title = r[1],
-                attr = r[2],
-                lang = r[3],
-                cond = r[4],
-                view = r[5],
-                hint = r[6],
-                code = r[7],
-                author = r[8] if r[8] else "noname",
-                timestamp = datetime.datetime.now()
+            content = r[1] 
+#   e.preventDefault();
+#   newValue = content.value.replaceAll("@1", '🔴1').replaceAll("@2", '🔴2').replaceAll("@3", '📔3')
+#       .replaceAll("@4", '❗4').replaceAll("@5", '📘5');  
+#   replaceString(content, newValue, 0, content.value.length)
+
+
+            lecture = Lecture(
+                disc_id=disc.id,
+                content=content,
+                is_public=False,
+                modified=dt.datetime.now()
             )
-            db.add(prob)
+            db.add(lecture)
         db.commit()      
 
-
-def add_testing_problemsets():
-
-    probsets = [
-        ProblemSet(title="Задачник1", username="tutor", open_time=datetime.datetime.now(), open_minutes=0,
-                   problem_ids=""),
-        ProblemSet(title="Задачник2", username="tutor", open_time=datetime.datetime.now(), open_minutes=0,
-                   problem_ids=""),
-    ]
-    with Session(engine) as db:        
-        for probset in probsets:
-            ids = map(lambda p: p.id, db.query(Problem).all()[:3]) 
-            probset.problem_ids = ' '.join(ids)                 
-            db.add(probset)
-        db.commit()      
 
 
 if __name__ == "__main__":
     pass
-    # rows = read_problems()
-    # write_problems(rows)
-    # print(f"Конвертовано задач: {len(rows)}")
+    convert_disc(disc_title="opr", username="tutor", lang="js")
 
