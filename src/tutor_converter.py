@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, String, DateTime
 from sqlalchemy.orm import Session
 import datetime as dt
 
-from tutor_models import Disc, Lecture
+from tutor_models import Disc, Lecture, Picture
 
 conn_str_ask = 'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=HP2\\SQLEXPRESS; DATABASE=Ask; Trusted_Connection=yes'
 path_to_db = "sqlite:///Tutor.db"
@@ -28,8 +28,11 @@ def convert_disc(disc_title: str, username: str, lang: str):
         db.commit()
         db.refresh(disc)
 
-    # rows = read_lectures(disc)
-    # write_lectures(disc, rows)
+    rows = read_lectures(disc)
+    write_lectures(disc, rows)
+
+    rows = read_pictures(disc)
+    write_pictures(disc, rows)
 
 def read_lectures(disc: Disc):
     with pyodbc.connect(conn_str_ask) as conn:
@@ -42,13 +45,8 @@ def read_lectures(disc: Disc):
 def write_lectures(disc: Disc, rows) -> None:
     with Session(engine) as db:
         for r in rows:
-            content = r[1] 
-#   e.preventDefault();
-#   newValue = content.value.replaceAll("@1", '🔴1').replaceAll("@2", '🔴2').replaceAll("@3", '📔3')
-#       .replaceAll("@4", '❗4').replaceAll("@5", '📘5');  
-#   replaceString(content, newValue, 0, content.value.length)
-
-
+            content = r[1].replace("@1", '🔴1').replace("@2", '🔴2').replace("@3", '📔3') \
+                          .replace("@4", '❗4').replace("@5", '📘5');  
             lecture = Lecture(
                 disc_id=disc.id,
                 content=content,
@@ -56,6 +54,26 @@ def write_lectures(disc: Disc, rows) -> None:
                 modified=dt.datetime.now()
             )
             db.add(lecture)
+
+        db.commit()      
+
+def read_pictures(disc: Disc):
+    with pyodbc.connect(conn_str_ask) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            f"SELECT TutorName, PictureName, Content FROM Picture WHERE TutorName='{disc.title}'")
+        rows = cursor.fetchall()
+    return rows
+
+def write_pictures(disc: Disc, rows) -> None:
+    with Session(engine) as db:
+        for r in rows:
+            picture = Picture(
+                title=r[1],
+                disc_id=disc.id,
+                image=r[2]
+            )
+            db.add(picture)
         db.commit()      
 
 
