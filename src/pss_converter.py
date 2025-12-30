@@ -1,15 +1,15 @@
 import pyodbc
-from src.pss_models import Base, Problem, ProblemSet, User
-from sqlalchemy import create_engine, String, DateTime
+from .pss_models import Base, Problem, ProblemSet
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import datetime
 import uuid
 
 conn_str_tss = 'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=HP2\\SQLEXPRESS; DATABASE=TSS; Trusted_Connection=yes'
-path_to_db = "sqlite:///PSS.db"
+con_str_sqlite = "sqlite:///C:/docker_bag/data/pss.db"
 
 # Create target DB
-engine = create_engine(path_to_db, echo=False)
+engine = create_engine(con_str_sqlite, echo=False)
 Base.metadata.create_all(engine)
 
 
@@ -59,7 +59,7 @@ def add_testing_problemsets():
 
 if __name__ == "__main__":
     pass
-    # rows = read_problems()
+    rows = read_problems()
     # write_problems(rows)
-    # print(f"Конвертовано задач: {len(rows)}")
+    print(f"Конвертовано задач: {len(rows)}")
 

@@ -1,13 +1,11 @@
 import pyodbc
-from src.pss_models import Base, Problem, ProblemSet, User
-from sqlalchemy import create_engine, String, DateTime
+from src.user_models import Base, User
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-import datetime
-import uuid
 import bcrypt
 
 conn_str_ask = 'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=HP2\\SQLEXPRESS; DATABASE=Ask; Trusted_Connection=yes'
-path_to_db = "sqlite:///User.db"
+path_to_db = "sqlite:///C:/docker_bag/data/user.db"
 
 # Create target DB
 engine = create_engine(path_to_db, echo=False)
@@ -57,9 +55,9 @@ def add_users_for_testing():
 
 if __name__ == "__main__":
     pass
-    # rows = read_students()
+    rows = read_students()
     # write_students(rows)
-    # print(f"Конвертовано студентів: {len(rows)}")
+    print(f"Конвертовано студентів: {len(rows)}")
 
     # add_users_for_testing()
     # print(f"Додано тестових юзерів")

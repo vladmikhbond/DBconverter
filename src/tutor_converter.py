@@ -1,12 +1,12 @@
 import pyodbc
-from sqlalchemy import create_engine, String, DateTime
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 import datetime as dt
 
-from tutor_models import Disc, Lecture, Picture
+from src.tutor_models import Disc, Lecture, Picture
 
 conn_str_ask = 'DRIVER={ODBC Driver 17 for SQL Server}; SERVER=HP2\\SQLEXPRESS; DATABASE=Ask; Trusted_Connection=yes'
-path_to_db = "sqlite:///Tutor.db"
+path_to_db = "sqlite:///C:/docker_bag/data/Tutor.db"
 
 # Create target DB
 engine = create_engine(path_to_db, echo=False)
