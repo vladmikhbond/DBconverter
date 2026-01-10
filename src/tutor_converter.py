@@ -77,8 +77,26 @@ def write_pictures(disc: Disc, rows) -> None:
         db.commit()      
 
 
+def beauty():
+    with Session(engine) as db:
+        lectures = db.query(Lecture).all()
+        for lec in lectures:
+            ss = lec.content.splitlines()
+            for i, s in enumerate(ss):
+                if   s.startswith('🔴1'): ss[i] = '🔴' + s[2:]
+                elif s.startswith('🔴2'): ss[i] = '🟥' + s[2:]
+                elif s.startswith('📔3'): ss[i] = '🟦' + s[2:]
+                elif s.startswith('❗4'): ss[i] = '🟨' + s[2:]
+                elif s.startswith('📗5'): ss[i] = '🟩' + s[2:]
+                elif s.startswith('📘6'): ss[i] = '⬛' + s[2:]
+            lec.content = '\n'.join(ss)
+        db.commit()
+    return len(lectures)        
+
+
+
 
 if __name__ == "__main__":
-    pass
-    convert_disc(disc_title="opr", username="tutor", lang="js")
+    beauty()
+    # convert_disc(disc_title="vba", username="tutor", lang="js")
 
